@@ -3,156 +3,142 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>星云大陆｜浮空城 - 第二版 Demo</title>
+  <title>星云大陆｜浮空城：星塔遗案</title>
   <style>
     :root {
       --bg: #06111b;
-      --bg-deep: #040c15;
-      --panel: rgba(12, 25, 38, 0.78);
-      --panel-2: rgba(17, 34, 50, 0.8);
-      --line: rgba(165, 228, 255, 0.25);
+      --panel: rgba(10, 21, 33, 0.8);
+      --panel-soft: rgba(17, 35, 52, 0.78);
+      --line: rgba(168, 232, 255, 0.28);
       --cyan: #8beaff;
+      --cyan-2: #66d9ff;
       --gold: #f3d18a;
       --ink: #071321;
-      --muted: #abbed0;
-      --danger: #ffb08b;
-      --success: #9be6ba;
-      --shadow: rgba(65, 154, 255, 0.25);
-      --radial: rgba(255, 245, 191, 0.65);
+      --muted: #a8bfd2;
+      --danger: #ffb08a;
+      --success: #9ee7ba;
+      --shadow: rgba(73, 165, 228, 0.28);
     }
 
     * { box-sizing: border-box; }
     html, body {
-      margin: 0; height: 100%; background: var(--bg);
-      color: #edfaff; font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      margin: 0; height: 100%; background: var(--bg); color: #edfaff; font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
     }
-
     body {
       display: flex; justify-content: center; align-items: center; padding: 18px;
     }
+    button, input { font: inherit; }
 
     .game-shell {
-      width: min(1500px, 100%);
+      width: min(1560px, 100%);
+      min-height: 860px;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
+      grid-template-columns: minmax(0, 1fr) 360px;
       gap: 12px;
-      min-height: 840px;
     }
 
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 18px;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 18px 28px rgba(0,0,0,0.16);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 18px 28px rgba(0,0,0,0.15);
       backdrop-filter: blur(12px);
     }
 
-    .map-panel {
+    .world-panel {
       position: relative;
       overflow: hidden;
       min-height: 780px;
+      background: linear-gradient(#2d6590 0%, #a5d7dd 34%, #f1e0ba 56%, #2b5b5a 100%);
       border-radius: 20px;
-      background: linear-gradient(#335d88 0%, #a4d7de 31%, #efd5a2 56%, #2e5c5e 100%);
-      isolation: isolate;
     }
 
     .sky {
       position: absolute; inset: 0;
       background:
-        radial-gradient(circle at 77% 16%, rgba(255, 245, 191, 0.9) 0 2%, rgba(255, 245, 191, 0.48) 6%, rgba(255,255,255,0) 18%),
-        linear-gradient(to bottom, rgba(45, 87, 123, 0.3), rgba(255,255,255,0) 59%, rgba(7, 19, 33, 0.2));
+        radial-gradient(circle at 78% 16%, rgba(255,245,191,0.9) 0 2.5%, rgba(255,245,191,0.5) 7%, rgba(255,255,255,0) 18%),
+        linear-gradient(to bottom, rgba(52,98,140,0.24), rgba(255,255,255,0) 59%, rgba(10,18,26,0.2));
       transition: filter 0.5s ease, opacity 0.5s ease;
     }
 
     .sun {
       position: absolute; right: 18%; top: 9%; width: 72px; height: 72px; border-radius: 50%;
-      background: radial-gradient(circle, #fff7d3 0%, #ffe7a1 42%, #f7d37a 100%);
-      box-shadow: 0 0 45px rgba(255, 228, 134, 0.8), 0 0 110px rgba(255, 228, 134, 0.52);
-      transition: opacity 0.3s ease;
+      background: radial-gradient(circle, #fff7d4 0%, #ffe7a2 42%, #f6d270 100%);
+      box-shadow: 0 0 45px rgba(255, 228, 134, 0.8), 0 0 100px rgba(255, 228, 134, 0.52);
     }
 
     .cloud {
-      position: absolute;
-      width: 240px; height: 44px; border-radius: 50%;
-      background: rgba(255,255,255,0.3);
-      filter: blur(8px);
-      opacity: 0.85;
-      animation: drift 28s ease-in-out infinite alternate;
+      position: absolute; width: 240px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.3); filter: blur(8px); opacity: 0.85;
+      animation: drift 26s ease-in-out infinite alternate;
     }
-    .cloud.c1 { left: 4%; top: 24%; }
-    .cloud.c2 { right: 8%; top: 41%; animation-duration: 34s; }
-    .cloud.c3 { left: 42%; top: 17%; animation-duration: 23s; }
-    @keyframes drift { to { transform: translateX(58px); } }
+    .cloud.c1 { left: 4%; top: 25%; }
+    .cloud.c2 { right: 8%; top: 42%; animation-duration: 32s; }
+    .cloud.c3 { left: 42%; top: 18%; animation-duration: 24s; }
+    @keyframes drift { to { transform: translateX(56px); } }
 
     .island {
-      position: absolute; bottom: 18%; width: 190px; height: 120px;
+      position: absolute; bottom: 17%; width: 190px; height: 120px;
       filter: drop-shadow(0 12px 8px rgba(15, 34, 46, 0.35));
       animation: float 6s ease-in-out infinite alternate;
       z-index: 1;
     }
     .island::before {
       content: ""; position: absolute; inset: 0 0 30% 0;
-      background: linear-gradient(135deg, #8ba982, #4f7c73 60%, #2b5e60);
+      background: linear-gradient(135deg, #8cae7d, #4d7c74 60%, #295e60);
       clip-path: polygon(0 39%, 16% 12%, 37% 18%, 55% 0, 81% 24%, 100% 42%, 88% 72%, 65% 75%, 44% 100%, 18% 70%);
     }
     .island::after {
       content: ""; position: absolute; left: 20%; top: 52%; width: 60%; height: 46%;
-      background: linear-gradient(90deg, #6f5648, #bca97d, #52676b);
+      background: linear-gradient(90deg, #6d5848, #bca97e, #53676c);
       clip-path: polygon(10% 0, 86% 0, 100% 20%, 64% 100%, 36% 86%, 0 22%);
     }
     @keyframes float { to { transform: translateY(-12px); } }
     .island.i1 { left: 7%; }
-    .island.i2 { right: 5%; width: 220px; height: 150px; animation-delay: -3s; }
+    .island.i2 { right: 4%; width: 220px; height: 150px; animation-delay: -3s; }
     .island.i3 { left: 42%; bottom: 28%; width: 130px; height: 100px; }
 
     .city {
-      position: absolute; left: 29%; top: 18%; width: 42%; height: 38%;
+      position: absolute; left: 28%; top: 18%; width: 42%; height: 38%;
       display: flex; align-items: flex-end; justify-content: center; gap: 5px; z-index: 2;
     }
     .tower {
       position: relative; width: 12%; height: var(--h);
-      background: linear-gradient(90deg, #93adbf, #faffdf 48%, #6d8ca8);
+      background: linear-gradient(90deg, #93afbf, #f8f0d7 48%, #6888a3);
       clip-path: polygon(0 100%, 0 24%, 20% 24%, 20% 10%, 40% 10%, 50% 0, 60% 10%, 80% 10%, 80% 24%, 100% 24%, 100% 100%);
     }
     .tower::after {
-      content: ""; position: absolute; left: 35%; top: 34%; width: 30%; height: 8px; background: #66eaf7;
-      box-shadow: 0 0 12px rgba(102,234,247,0.9);
+      content: ""; position: absolute; left: 35%; top: 34%; width: 30%; height: 8px; background: #66eaf8; box-shadow: 0 0 12px rgba(102,234,248,0.9);
     }
 
     .spire {
-      position: absolute; left: 49%; bottom: 37%; width: 34px; height: 150px;
-      background: linear-gradient(90deg, #d0efff, #ffffff, #6ad8ff);
+      position: absolute; left: 49%; bottom: 37%; width: 36px; height: 150px;
+      background: linear-gradient(90deg, #d0efff, #fff, #6ad8ff);
       clip-path: polygon(50% 0, 100% 28%, 76% 100%, 24% 100%, 0 28%);
-      filter: drop-shadow(0 0 18px rgba(93, 223, 255, 0.9));
-      z-index: 3;
-      transition: filter 0.5s ease, opacity 0.5s ease;
+      filter: drop-shadow(0 0 18px rgba(93,223,255,0.9));
+      z-index: 3; transition: filter 0.4s ease, opacity 0.4s ease;
     }
-
     .beam {
       position: absolute; left: 50.3%; bottom: 49%; width: 2px; height: 140px;
-      background: linear-gradient(to top, rgba(174, 238, 255, 0.2), rgba(174, 238, 255, 0.9), rgba(174, 238, 255, 0));
+      background: linear-gradient(to top, rgba(174,238,255,0.2), rgba(174,238,255,0.9), rgba(174,238,255,0));
       filter: blur(5px); opacity: 0.7; z-index: 2; transition: opacity 0.5s ease;
     }
-
     .bridge {
-      position: absolute; left: 20%; top: 49%; width: 58%; height: 8px; border-top: 4px solid rgba(243, 231, 196, 0.9);
-      transform: rotate(-5deg); box-shadow: 0 0 8px rgba(255,255,255,0.4); z-index: 2;
+      position: absolute; left: 20%; top: 49%; width: 58%; height: 8px; border-top: 4px solid rgba(243,231,196,0.9);
+      transform: rotate(-5deg); box-shadow: 0 0 12px rgba(255,255,255,0.35); z-index: 2;
     }
-
     .waterfall {
       position: absolute; left: 44.5%; top: 52%; width: 4%; height: 25%;
       background: linear-gradient(to top, rgba(233,255,255,0.2), rgba(120,230,255,0.55), rgba(255,255,255,0));
       filter: blur(6px); z-index: 2; transition: opacity 0.3s ease, filter 0.3s ease;
     }
-
     .land {
-      position: absolute; left: -10%; bottom: -8%; width: 120%; height: 42%; background: linear-gradient(160deg, #5a826a, #1b4a4d 62%, #0f2939);
-      clip-path: polygon(0 28%, 15% 8%, 28% 24%, 46% 0, 62% 18%, 80% 4%, 100% 24%, 100% 100%, 0 100%);
-      z-index: 0;
+      position: absolute; left: -10%; bottom: -8%; width: 120%; height: 42%; background: linear-gradient(160deg, #5d856c, #1b4a4d 62%, #102d3c);
+      clip-path: polygon(0 28%, 15% 8%, 28% 24%, 46% 0, 62% 18%, 80% 4%, 100% 24%, 100% 100%, 0 100%); z-index: 0;
     }
     .path {
       position: absolute; left: 36%; bottom: 0; width: 30%; height: 25%;
-      background: linear-gradient(90deg, #9d9981, #e4d5b7, #6a7e70);
+      background: linear-gradient(90deg, #9d9981, #e5d6b7, #697d70);
       clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%); opacity: 0.72; z-index: 1;
     }
 
@@ -164,59 +150,53 @@
     }
     .tree::after {
       content: ""; position: absolute; left: 0; bottom: 36px; width: 80px; height: 80px; border-radius: 50%;
-      background: radial-gradient(circle at 35% 28%, #afcd7e, #43725f 64%, #2c5048 100%);
+      background: radial-gradient(circle at 35% 28%, #afcd7e, #44715f 64%, #2d4f47 100%);
     }
     .tree.t1 { left: 4%; }
     .tree.t2 { right: 4%; transform: scale(1.2); }
 
     .hero {
-      position: absolute; left: 48%; bottom: 12%; width: 62px; height: 150px; z-index: 4;
+      position: absolute; left: 48%; bottom: 12%; width: 62px; height: 150px; z-index: 5;
       transition: left 0.25s ease, transform 0.3s ease;
       filter: drop-shadow(0 8px 7px rgba(11, 30, 39, 0.5));
     }
     .head { position: absolute; top: 0; left: 20px; width: 24px; height: 28px; background: #d7b18b; border-radius: 50%; }
     .hair { position: absolute; top: -4px; left: 17px; width: 31px; height: 20px; border-radius: 50%; background: #39373d; }
     .body { position: absolute; top: 25px; left: 9px; width: 46px; height: 78px; background: linear-gradient(90deg, #1c2d45, #5b7787, #1c2d44); clip-path: polygon(24% 0, 76% 0, 100% 100%, 0 100%); }
-    .legs { position: absolute; top: 99px; left: 18px; width: 30px; height: 51px; background: #2a3742; clip-path: polygon(0 0, 100% 0, 81% 100%, 52% 100%, 40% 35%, 25% 100%, 0 100%); }
+    .legs { position: absolute; top: 99px; left: 18px; width: 30px; height: 51px; background: #2a3742; clip-path: polygon(0 0,100% 0,81% 100%,52% 100%,40% 35%,25% 100%,0 100%); }
 
     .hud {
       position: absolute; left: 12px; right: 12px; top: 12px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 8;
     }
-
     .map-badge {
-      width: 104px; height: 104px; border-radius: 50%; border: 1px solid rgba(155, 233, 255, 0.5);
+      width: 104px; height: 104px; border-radius: 50%; border: 1px solid rgba(155,233,255,0.5);
       background: radial-gradient(circle, #1f4f62, #0c2437 66%, #081924);
       text-align: center; padding-top: 8px; font-size: 10px; color: #edfaff;
-      box-shadow: inset 0 0 14px rgba(89, 189, 255, 0.18);
+      box-shadow: inset 0 0 14px rgba(89,189,255,0.18);
     }
     .map-badge::after {
       content: "◆"; display: block; margin-top: 20px; color: var(--gold); font-size: 20px; text-shadow: 0 0 12px rgba(243,209,138,0.7);
     }
-
     .quick {
       display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; max-width: 70%;
     }
-    .quick button, .move button, .dialogue button, .side-card button, .modal button {
-      appearance: none; border: 1px solid var(--line); background: rgba(12, 25, 38, 0.75); color: inherit; border-radius: 10px;
-      padding: 8px 10px; font: inherit; cursor: pointer; transition: 0.18s ease;
+    .quick button, .move button, .dialogue button, .side-card button, .modal button, .action-row button {
+      appearance: none; border: 1px solid var(--line); background: rgba(12,25,38,0.75); color: inherit; border-radius: 10px;
+      padding: 8px 10px; cursor: pointer; transition: 0.18s ease;
     }
-    .quick button:hover, .move button:hover, .dialogue button:hover, .side-card button:hover, .modal button:hover {
-      border-color: var(--cyan); background: rgba(28, 52, 70, 0.9);
+    .quick button:hover, .move button:hover, .dialogue button:hover, .side-card button:hover, .modal button:hover, .action-row button:hover {
+      border-color: var(--cyan); background: rgba(30, 55, 72, 0.9);
     }
 
     .marker {
-      position: absolute; left: 61%; top: 47%; z-index: 7; text-align: center; color: var(--gold); font-size: 12px;
-      text-shadow: 0 0 10px rgba(243,209,138,0.7);
+      position: absolute; left: 61%; top: 47%; z-index: 7; text-align: center; color: var(--gold); font-size: 12px; text-shadow: 0 0 10px rgba(243,209,138,0.7);
     }
-    .marker b {
-      display: block; font-size: 28px; animation: pulse 1.8s infinite;
-    }
+    .marker b { display: block; font-size: 28px; animation: pulse 1.8s infinite; }
     @keyframes pulse { 50% { transform: scale(1.15); } }
 
     .objective {
       position: absolute; left: 14px; bottom: 14px; z-index: 8; width: min(350px, 60%);
-      padding: 12px 14px; background: rgba(9, 22, 33, 0.72); border: 1px solid var(--line); border-radius: 14px;
-      backdrop-filter: blur(10px);
+      padding: 12px 14px; background: rgba(9, 22, 33, 0.72); border: 1px solid var(--line); border-radius: 14px; backdrop-filter: blur(10px);
     }
     .objective .title { display: flex; justify-content: space-between; align-items: center; }
     .objective h3 { margin: 0; font-size: 13px; }
@@ -230,8 +210,7 @@
 
     .dialogue {
       position: absolute; right: 14px; bottom: 14px; z-index: 9; width: min(360px, 45%);
-      padding: 12px 14px; background: rgba(9, 22, 33, 0.75); border: 1px solid var(--line); border-radius: 14px;
-      backdrop-filter: blur(10px);
+      padding: 12px 14px; background: rgba(9, 22, 33, 0.75); border: 1px solid var(--line); border-radius: 14px; backdrop-filter: blur(10px);
     }
     .speaker { display: flex; align-items: center; gap: 10px; }
     .portrait {
@@ -248,7 +227,6 @@
     .sidebar {
       display: flex; flex-direction: column; gap: 12px;
     }
-
     .side-card {
       background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px;
     }
@@ -279,9 +257,12 @@
     .bar {
       height: 4px; background: rgba(255,255,255,0.12); border-radius: 999px; margin-top: 7px; overflow: hidden;
     }
-    .bar i {
-      display: block; height: 100%; width: 0%; background: #8beaff; border-radius: inherit; transition: width 0.3s ease;
+    .bar i { display: block; height: 100%; width: 0%; border-radius: inherit; transition: width 0.3s ease; }
+
+    .action-row {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 10px;
     }
+    .action-row button { width: 100%; }
 
     .slider { margin: 10px 0; }
     .slider label { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 5px; }
@@ -289,11 +270,9 @@
     input[type="range"] { width: 100%; accent-color: #8beaff; }
 
     .log {
-      max-height: 120px; overflow: auto; display: grid; gap: 7px; padding-right: 4px;
+      max-height: 140px; overflow: auto; display: grid; gap: 7px; padding-right: 4px;
     }
-    .logitem {
-      border-left: 2px solid rgba(104,216,237,0.9); padding-left: 8px; font-size: 11px; color: #d2e3ee; line-height: 1.6;
-    }
+    .logitem { border-left: 2px solid rgba(104,216,237,0.9); padding-left: 8px; font-size: 11px; color: #d2e3ee; line-height: 1.6; }
     .logitem small { display: block; color: #7f9db3; }
 
     .footer {
@@ -303,12 +282,12 @@
     .toast {
       position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
       background: #e9faff; color: #10253b; padding: 10px 16px; border-radius: 12px; border: 1px solid rgba(104,216,237,0.5);
-      box-shadow: 0 12px 24px rgba(0,0,0,0.25); transition: 0.2s ease; z-index: 80; max-width: 90vw;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.25); transition: 0.2s ease; z-index: 100; max-width: 90vw;
     }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
     .modal {
-      position: fixed; inset: 0; background: rgba(3, 10, 18, 0.76); display: none; place-items: center; z-index: 100; padding: 20px;
+      position: fixed; inset: 0; background: rgba(3,10,18,0.76); display: none; place-items: center; z-index: 110; padding: 20px;
     }
     .modal.open { display: grid; }
     .modal-box {
@@ -324,10 +303,9 @@
       .sidebar { display: grid; grid-template-columns: 1fr 1fr; }
       .sidebar .side-card:first-child { grid-column: 1 / -1; }
     }
-
     @media (max-width: 700px) {
       body { padding: 10px; }
-      .map-panel { min-height: 760px; }
+      .world-panel { min-height: 760px; }
       .objective { width: 72%; }
       .dialogue { left: 12px; right: 12px; bottom: 12px; width: auto; }
       .quick { max-width: 72%; }
@@ -340,7 +318,7 @@
 </head>
 <body>
   <div class="game-shell">
-    <main class="map-panel panel" id="world">
+    <main class="world-panel panel" id="world">
       <div class="sky" id="sky"></div>
       <div class="sun" id="sun"></div>
       <div class="cloud c1"></div>
@@ -425,23 +403,17 @@
 
     <aside class="sidebar">
       <section class="side-card">
-        <div class="card-head">
-          <h2>▤ 任务日志</h2>
-          <span class="muted" id="taskCount">0 / 3 已完成</span>
-        </div>
-
+        <div class="card-head"><h2>▤ 任务日志</h2><span class="muted" id="taskCount">0 / 3 已完成</span></div>
         <div class="quest">
           <div class="quest-name"><span>✦ 星塔的低语</span><span class="tag" id="mainTag">主线</span></div>
           <p id="mainDesc">与艾莉娅交谈，接受调查任务。</p>
           <button id="mainAction">接受任务</button>
         </div>
-
         <div class="quest">
           <div class="quest-name"><span>◇ 失落的记忆</span><span class="tag">支线</span></div>
           <p id="sideDesc">寻找散落在浮空城中的 3 个记忆碎片。</p>
           <button id="memoryBtn">搜寻记忆碎片 (0/3)</button>
         </div>
-
         <div class="quest">
           <div class="quest-name"><span>⌖ 云海信使</span><span class="tag">探索</span></div>
           <p>调查城市边缘的发光信标，发现隐藏讯息。</p>
@@ -450,69 +422,38 @@
       </section>
 
       <section class="side-card">
-        <div class="card-head">
-          <h2>◈ 冒险者状态</h2>
-          <span class="muted">Lv.3 · 旅人</span>
-        </div>
+        <div class="card-head"><h2>◈ 冒险者状态</h2><span class="muted">Lv.3 · 旅人</span></div>
         <div class="stats-grid">
-          <div class="stat">
-            <label>生命 HP</label>
-            <strong id="hp">100</strong>
-            <div class="bar"><i id="hpBar" style="width:100%"></i></div>
-          </div>
-          <div class="stat">
-            <label>星能 MP</label>
-            <strong id="mp">64</strong>
-            <div class="bar"><i id="mpBar" style="width:64%;background:#9a9cff"></i></div>
-          </div>
-          <div class="stat">
-            <label>艾莉娅好感</label>
-            <strong id="affinity">2</strong>
-            <div class="bar"><i id="affBar" style="width:25%;background:#f59ac1"></i></div>
-          </div>
-          <div class="stat">
-            <label>记忆碎片</label>
-            <strong id="memStat">0/3</strong>
-            <div class="bar"><i id="memBar" style="width:0%;background:#f3cf82"></i></div>
-          </div>
+          <div class="stat"><label>生命 HP</label><strong id="hp">100</strong><div class="bar"><i id="hpBar" style="width:100%;background:#8beaff"></i></div></div>
+          <div class="stat"><label>星能 MP</label><strong id="mp">64</strong><div class="bar"><i id="mpBar" style="width:64%;background:#9a9cff"></i></div></div>
+          <div class="stat"><label>艾莉娅好感</label><strong id="affinity">2</strong><div class="bar"><i id="affBar" style="width:25%;background:#f59ac1"></i></div></div>
+          <div class="stat"><label>记忆碎片</label><strong id="memStat">0/3</strong><div class="bar"><i id="memBar" style="width:0%;background:#f3cf82"></i></div></div>
+        </div>
+        <div class="action-row">
+          <button id="skillPulse">星尘冲击</button>
+          <button id="skillShield">光环屏障</button>
+          <button id="skillTrace">记忆回溯</button>
+          <button id="skillRush">云海突进</button>
         </div>
       </section>
 
       <section class="side-card">
-        <div class="card-head">
-          <h2>☼ 世界环境</h2>
-          <span class="muted">实时可调</span>
-        </div>
-        <div class="slider">
-          <label for="light">光照强度 <output id="lightOut">75%</output></label>
-          <input id="light" type="range" min="10" max="100" value="75" />
-        </div>
-        <div class="slider">
-          <label for="weather">天气指数 <output id="weatherOut">晴朗</output></label>
-          <input id="weather" type="range" min="0" max="100" value="15" />
-        </div>
-        <div class="slider">
-          <label for="magic">星塔能量 <output id="magicOut">82%</output></label>
-          <input id="magic" type="range" min="0" max="100" value="82" />
-        </div>
-        <div style="display:flex;justify-content:space-between;gap:10px">
-          <span class="muted" id="weatherLabel">☀ 晴朗 · 微风</span>
-          <span class="muted" id="magicLabel">星塔稳定</span>
-        </div>
+        <div class="card-head"><h2>☼ 世界环境</h2><span class="muted">实时可调</span></div>
+        <div class="slider"><label for="light">光照强度 <output id="lightOut">75%</output></label><input id="light" type="range" min="10" max="100" value="75" /></div>
+        <div class="slider"><label for="weather">天气指数 <output id="weatherOut">晴朗</output></label><input id="weather" type="range" min="0" max="100" value="15" /></div>
+        <div class="slider"><label for="magic">星塔能量 <output id="magicOut">82%</output></label><input id="magic" type="range" min="0" max="100" value="82" /></div>
+        <div style="display:flex;justify-content:space-between;gap:10px"><span class="muted" id="weatherLabel">☀ 晴朗 · 微风</span><span class="muted" id="magicLabel">星塔稳定</span></div>
       </section>
 
       <section class="side-card">
-        <div class="card-head">
-          <h2>◷ 世界事件</h2>
-          <button id="clearLog" style="padding:4px 8px;font-size:10px">清空</button>
-        </div>
+        <div class="card-head"><h2>◷ 世界事件</h2><button id="clearLog" style="padding:4px 8px;font-size:10px">清空</button></div>
         <div class="log" id="log" aria-live="polite"></div>
       </section>
     </aside>
 
     <footer class="footer">
       <span>操作：点击对话选项与任务按钮；方向键按钮移动；滑块改变光照、天气和星塔能量。</span>
-      <span>单文件互动原型 · 本地运行 · 无需安装</span>
+      <span>single-file adventure prototype · local run</span>
     </footer>
   </div>
 
@@ -534,7 +475,7 @@
 (() => {
   const $ = (id) => document.getElementById(id);
 
-  const S = {
+  const state = {
     accepted: false,
     progress: 0,
     memory: 0,
@@ -543,15 +484,15 @@
     x: 48,
     depth: 0,
     beacon: false,
-    visited: { town: true, tower: false, beacon: false }
+    world: '浮空城外环',
+    inventory: { '星尘': 3, '治愈药': 2, '星塔徽记': 0 },
+    combo: 0
   };
 
   let logs = [];
 
   function esc(s) {
-    return String(s).replace(/[&<>"']/g, c => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[c]));
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
   function record(text) {
@@ -570,60 +511,61 @@
     toast.timer = setTimeout(() => e.classList.remove('show'), 2300);
   }
 
-  function render() {
-    const statusText = S.progress === 3 ? '已完成' : S.accepted ? '进行中' : '未接受';
-    $('questStatus').textContent = statusText;
+  function getRemaining() {
+    return Math.max(12, 156 - state.progress * 48 - state.depth * 8);
+  }
 
+  function render() {
+    const statusText = state.progress === 3 ? '已完成' : state.accepted ? '进行中' : '未接受';
+    $('questStatus').textContent = statusText;
     $('questLine').innerHTML =
-      S.progress === 0 ? '<span class="gold">◇</span> 与艾莉娅对话，了解浮空城的异变' :
-      S.progress === 1 ? '<span class="gold">◇</span> 前往星塔入口，检查能量装置' :
-      S.progress === 2 ? '<span class="gold">◇</span> 找到星塔核心，稳定能量流' :
+      state.progress === 0 ? '<span class="gold">◇</span> 与艾莉娅对话，了解浮空城的异变' :
+      state.progress === 1 ? '<span class="gold">◇</span> 前往星塔入口，检查能量装置' :
+      state.progress === 2 ? '<span class="gold">◇</span> 找到星塔核心，稳定能量流' :
       '<span class="gold">✓</span> 星塔恢复稳定，向艾莉娅汇报';
 
-    $('questProgress').style.width = (S.progress / 3 * 100) + '%';
-
+    $('questProgress').style.width = (state.progress / 3 * 100) + '%';
     $('questHint').textContent =
-      S.progress === 3 ? '任务完成 · 获得星塔徽记' :
-      S.accepted ? `目标距离 ${Math.max(12, 156 - S.progress * 48)}m · 建议等级 Lv.3` :
+      state.progress === 3 ? '任务完成 · 获得星塔徽记' :
+      state.accepted ? `目标距离 ${Math.max(12, 156 - state.progress * 48)}m · 建议等级 Lv.3` :
       '前往城门 · 建议等级 Lv.3';
 
     $('mainDesc').textContent =
-      !S.accepted ? '与艾莉娅交谈，接受调查任务。'
-      : S.progress === 3 ? '星塔异变已解决，获得星塔徽记。'
-      : `任务已接受：${['', '前往星塔入口', '稳定星塔核心'][S.progress] || '继续调查'}。`;
+      !state.accepted ? '与艾莉娅交谈，接受调查任务。'
+      : state.progress === 3 ? '星塔异变已解决，获得星塔徽记。'
+      : `任务已接受：${['', '前往星塔入口', '稳定星塔核心'][state.progress] || '继续调查'}。`;
 
-    $('mainTag').textContent = S.progress === 3 ? '已完成' : S.accepted ? '进行中' : '主线';
-    $('mainAction').textContent = !S.accepted ? '接受任务' : S.progress === 3 ? '任务已完成' : '推进任务目标';
-    $('mainAction').disabled = S.progress === 3;
+    $('mainTag').textContent = state.progress === 3 ? '已完成' : state.accepted ? '进行中' : '主线';
+    $('mainAction').textContent = !state.accepted ? '接受任务' : state.progress === 3 ? '任务已完成' : '推进任务目标';
+    $('mainAction').disabled = state.progress === 3;
 
-    const completeCount = (S.progress === 3 ? 1 : 0) + (S.memory === 3 ? 1 : 0) + (S.beacon ? 1 : 0);
+    const completeCount = (state.progress === 3 ? 1 : 0) + (state.memory === 3 ? 1 : 0) + (state.beacon ? 1 : 0);
     $('taskCount').textContent = `${completeCount} / 3 已完成`;
-
-    $('memoryBtn').textContent = `搜寻记忆碎片 (${S.memory}/3)`;
-    $('memStat').textContent = `${S.memory}/3`;
-    $('memBar').style.width = (S.memory / 3 * 100) + '%';
+    $('memoryBtn').textContent = `搜寻记忆碎片 (${state.memory}/3)`;
+    $('memStat').textContent = `${state.memory}/3`;
+    $('memBar').style.width = (state.memory / 3 * 100) + '%';
 
     $('hp').textContent = '100';
-    $('mp').textContent = S.mp;
-    $('mpBar').style.width = S.mp + '%';
-    $('affinity').textContent = S.affinity;
-    $('affBar').style.width = Math.min(100, S.affinity * 10) + '%';
-    $('relationship').textContent = `浮空城引导者 · 好感度 Lv.${Math.max(1, Math.ceil(S.affinity / 2))}`;
+    $('mp').textContent = state.mp;
+    $('mpBar').style.width = state.mp + '%';
+    $('affinity').textContent = state.affinity;
+    $('affBar').style.width = Math.min(100, state.affinity * 10) + '%';
+    $('relationship').textContent = `浮空城引导者 · 好感度 Lv.${Math.max(1, Math.ceil(state.affinity / 2))}`;
 
-    const remaining = Math.max(12, 156 - S.progress * 48 - S.depth * 8);
+    const remaining = getRemaining();
     $('distance').textContent = remaining + 'm';
-    $('hero').style.left = S.x + '%';
-    $('hero').style.transform = `translateX(-50%) translateY(${-S.depth * 1.2}px) scale(${1 + S.depth * 0.012})`;
+    $('hero').style.left = state.x + '%';
+    $('hero').style.transform = `translateX(-50%) translateY(${-state.depth * 1.2}px) scale(${1 + state.depth * 0.012})`;
 
     const worldFilter =
-      S.progress === 0 ? '' :
-      S.progress === 1 ? 'hue-rotate(8deg) saturate(1.12)' :
-      S.progress === 2 ? 'hue-rotate(18deg) saturate(1.2) brightness(1.04)' :
+      state.progress === 0 ? '' :
+      state.progress === 1 ? 'hue-rotate(8deg) saturate(1.12)' :
+      state.progress === 2 ? 'hue-rotate(18deg) saturate(1.2) brightness(1.04)' :
       'saturate(1.25) brightness(1.12)';
     $('#world').style.filter = worldFilter;
 
-    $('beaconBtn').textContent = S.beacon ? '信标已调查 ✓' : '调查信标';
-    $('sideDesc').textContent = S.memory === 3 ? '已集齐碎片：隐藏记忆已解锁。' : `寻找散落的记忆碎片（${S.memory}/3）。`;
+    $('beaconBtn').textContent = state.beacon ? '信标已调查 ✓' : '调查信标';
+    $('sideDesc').textContent = state.memory === 3 ? '已集齐碎片：隐藏记忆已解锁。' : `寻找散落的记忆碎片（${state.memory}/3）。`;
     $('approach').textContent = remaining > 60 ? '靠近目标 ↑' : remaining > 24 ? '接近目标 ↑' : '调查目标 ✦';
   }
 
@@ -631,18 +573,27 @@
     $('speaker').textContent = name;
     $('dialogueText').textContent = text;
     $('choices').innerHTML = choices.map(c => `<button data-choice="${c[0]}">${esc(c[1])}</button>`).join('');
-    $('choices').querySelectorAll('button').forEach(btn => {
-      btn.onclick = () => choose(btn.dataset.choice);
-    });
+    $('choices').querySelectorAll('button').forEach(btn => btn.onclick = () => choose(btn.dataset.choice));
+  }
+
+  function setWorldHint() {
+    const hints = {
+      '浮空城外环': '沿步道前进，追踪星塔异变的源头。',
+      '星塔入口': '能量装置在昏暗灯光下正在抖动。',
+      '云海信标': '信标发出断断续续的星语脉冲。',
+      '塔心深处': '封印的回声正在撕开旧日记忆。'
+    };
+    record(`当前区域：${state.world} · ${hints[state.world] || '探索中...'}`);
   }
 
   function accept() {
-    if (S.accepted) {
+    if (state.accepted) {
       advance();
       return;
     }
-    S.accepted = true;
-    S.affinity = Math.min(10, S.affinity + 1);
+    state.accepted = true;
+    state.affinity = Math.min(10, state.affinity + 1);
+    state.world = '星塔入口';
     record('主线任务已接受：星塔的低语。');
     say('艾莉娅', '谢谢你，旅人！先检查星塔入口的能量装置，再稳定塔心。路上请留意记忆碎片，它们也许藏着真相。', [
       ['go', '明白了，前往星塔'],
@@ -653,12 +604,8 @@
   }
 
   function advance() {
-    if (!S.accepted) {
-      accept();
-      return;
-    }
-
-    if (S.progress >= 3) {
+    if (!state.accepted) { accept(); return; }
+    if (state.progress >= 3) {
       say('艾莉娅', '星塔已经恢复稳定。这枚徽记属于你。你愿意继续寻找云层之下的秘密吗？', [
         ['explore', '继续自由探索'],
         ['ask', '回顾浮空城的历史']
@@ -666,9 +613,10 @@
       return;
     }
 
-    S.progress++;
-    S.mp = Math.max(0, S.mp - 8);
-    S.affinity = Math.min(10, S.affinity + 1);
+    state.progress += 1;
+    state.mp = Math.max(0, state.mp - 8);
+    state.affinity = Math.min(10, state.affinity + 1);
+    state.world = state.progress === 1 ? '星塔入口' : state.progress === 2 ? '塔心深处' : '浮空城中心';
 
     const texts = [
       ['你抵达星塔入口，装置上的符文逐一亮起。', '阶段一完成：发现能量装置异常。'],
@@ -676,20 +624,21 @@
       ['最后一道屏障消散。钟声穿过云海，居民们欢呼起来。', '主线完成：获得星塔徽记。']
     ];
 
-    const step = texts[S.progress - 1];
+    const step = texts[state.progress - 1];
+    state.inventory['星塔徽记'] = state.progress === 3 ? 1 : state.inventory['星塔徽记'];
     record(step[1]);
     render();
 
-    if (S.progress === 3) {
+    if (state.progress === 3) {
       $('beam').style.opacity = '1';
       $('spire').style.filter = 'drop-shadow(0 0 32px #fff)';
-      say('艾莉娅', step[0] + ' 你做到了！我会记住今天。', [
+      say('艾莉娅', `${step[0]} 你做到了！我会记住今天。`, [
         ['explore', '继续自由探索'],
         ['ask', '询问云层下的秘密']
       ]);
       toast('结局路线解锁：星塔守护者');
     } else {
-      say('艾莉娅', step[0] + ' 前方还有线索，继续前进吧。', [
+      say('艾莉娅', `${step[0]} 前方还有线索，继续前进吧。`, [
         ['go', '继续推进任务'],
         ['explore', '暂时探索周围']
       ]);
@@ -701,7 +650,7 @@
     if (id === 'accept') accept();
     if (id === 'go') advance();
     if (id === 'ask') {
-      S.affinity = Math.min(10, S.affinity + 1);
+      state.affinity = Math.min(10, state.affinity + 1);
       record('你向艾莉娅询问了浮空城的历史。');
       say('艾莉娅', '浮空城由古代星术师建造，星塔将整座城市托举在云海上。三天前塔心开始低语，许多居民的记忆也随之消失。', [
         ['accept', '接受任务：调查星塔异变'],
@@ -710,46 +659,47 @@
       render();
     }
     if (id === 'explore') {
+      state.world = '云海信标';
       record('你选择暂时自由探索。');
       say('艾莉娅', '当然。留意蓝色碎片和城边的信标，它们可能指向被遗忘的真相。', [
         ['accept', '接受调查任务'],
         ['ask', '再讲讲星塔的故事']
       ]);
       toast('提示：尝试搜寻碎片或调查信标');
+      render();
     }
   }
 
-  $('mainAction').onclick = () => {
-    if (S.accepted) advance();
-    else accept();
-  };
+  function openModal(title, text) {
+    $('modalTitle').textContent = title;
+    $('modalText').textContent = text;
+    $('modal').classList.add('open');
+  }
+
+  $('mainAction').onclick = () => state.accepted ? advance() : accept();
 
   $('memoryBtn').onclick = () => {
-    if (S.memory >= 3) {
-      toast('记忆碎片已全部收集。');
-      return;
-    }
-    S.memory++;
-    S.mp = Math.min(100, S.mp + 4);
-    record(`找到记忆碎片 ${S.memory}/3。碎片映出一段星塔往事。`);
+    if (state.memory >= 3) { toast('记忆碎片已全部收集。'); return; }
+    state.memory += 1;
+    state.mp = Math.min(100, state.mp + 4);
+    state.inventory['星尘'] += 1;
+    record(`找到记忆碎片 ${state.memory}/3。碎片映出一段星塔往事。`);
     render();
-    say('艾莉娅', S.memory === 3 ?
+    say('艾莉娅', state.memory === 3 ?
       '三枚碎片拼合起来：星塔危机似乎是有人主动关闭了封印。隐藏记忆已解锁。' :
       '你发现一枚发着微光的记忆碎片，里面传来陌生的声音……', [
       ['go', '继续主线任务'],
       ['explore', '继续寻找线索']
     ]);
-    toast(`记忆碎片 ${S.memory}/3`);
+    toast(`记忆碎片 ${state.memory}/3`);
   };
 
   $('beaconBtn').onclick = () => {
-    if (S.beacon) {
-      toast('信标已调查过。');
-      return;
-    }
-    S.beacon = true;
-    S.mp = Math.min(100, S.mp + 10);
-    S.affinity = Math.min(10, S.affinity + 1);
+    if (state.beacon) { toast('信标已调查过。'); return; }
+    state.beacon = true;
+    state.mp = Math.min(100, state.mp + 10);
+    state.affinity = Math.min(10, state.affinity + 1);
+    state.world = '云海信标';
     record('你调查云海信标，发现一条加密讯息。');
     render();
     say('艾莉娅', '信使留下讯息：真正的入口在云层之下。星塔的危机也许只是开始。', [
@@ -761,16 +711,18 @@
 
   document.querySelectorAll('[data-move]').forEach(btn => {
     btn.onclick = () => {
-      S.x = Math.max(10, Math.min(85, S.x + Number(btn.dataset.move) * 6));
-      S.mp = Math.max(0, S.mp - 1);
+      state.x = Math.max(10, Math.min(85, state.x + Number(btn.dataset.move) * 6));
+      state.mp = Math.max(0, state.mp - 1);
+      state.world = '浮空城外环';
       render();
       record(Number(btn.dataset.move) < 0 ? '你向左移动，沿浮空城外缘探索。' : '你向右移动，朝星塔方向前进。');
     };
   });
 
   $('approach').onclick = () => {
-    if (!S.accepted) {
-      S.depth = Math.min(10, S.depth + 1);
+    if (!state.accepted) {
+      state.depth = Math.min(10, state.depth + 1);
+      state.world = '星塔入口';
       render();
       record('你沿步道向星塔方向靠近。');
       say('艾莉娅', '先接受调查委托，我才能为你标记真正的目标。', [
@@ -780,16 +732,17 @@
       return;
     }
 
-    S.depth = Math.min(18, S.depth + 2);
-    S.mp = Math.max(0, S.mp - 1);
+    state.depth = Math.min(18, state.depth + 2);
+    state.mp = Math.max(0, state.mp - 1);
+    state.world = state.depth > 10 ? '塔心深处' : '星塔入口';
     render();
 
-    const remaining = Math.max(12, 156 - S.progress * 48 - S.depth * 8);
+    const remaining = getRemaining();
     record(`你向星塔纵深前进，目标距离缩短至 ${remaining}m。`);
 
-    if (S.progress < 3 && remaining <= 60) {
+    if (state.progress < 3 && remaining <= 60) {
       advance();
-    } else if (S.progress === 3) {
+    } else if (state.progress === 3) {
       say('艾莉娅', '星塔已经稳定。继续靠近观景台，看看云海另一侧吧。', [
         ['explore', '探索观景台'],
         ['ask', '询问云层下的秘密']
@@ -807,37 +760,30 @@
   document.querySelectorAll('[data-panel]').forEach(btn => {
     btn.onclick = () => {
       const name = btn.dataset.panel;
+      const mapInfo = `当前区域：${state.world}\n目标：中央星塔\n可探索：云海信标、记忆碎片、古代遗迹`;
       const texts = {
-        背包: `星尘 × 3\n治疗药剂 × 2${S.progress === 3 ? '\n星塔徽记 × 1' : ''}`,
-        角色: `旅人 · Lv.3\n生命 100/100 · 星能 ${S.mp}/100\n艾莉娅好感：${S.affinity}/10`,
-        技能: '星能脉冲：探索互动时消耗星能，激活古代符文。此原型以剧情反馈模拟技能效果。',
-        任务: `主线：${S.progress === 3 ? '星塔的低语（已完成）' : S.accepted ? `星塔的低语（阶段 ${S.progress}/3）` : '星塔的低语（未接受）'}\n支线记忆碎片：${S.memory}/3\n云海信使：${S.beacon ? '已完成' : '未完成'}`,
-        地图: '当前区域：浮空城外围\n目标：中央星塔\n可探索：云海信标、记忆碎片、古代遗迹',
+        背包: `星尘 × ${state.inventory['星尘']}\n治疗药剂 × ${state.inventory['治愈药']}\n星塔徽记 × ${state.inventory['星塔徽记']}`,
+        角色: `旅人 · Lv.3\n生命 100/100 · 星能 ${state.mp}/100\n艾莉娅好感：${state.affinity}/10`,
+        技能: '星能脉冲：探索互动时消耗星能，激活古代符文。\n记忆回溯：回忆旧日记录，回收信息。\n光环屏障：抵挡异常状态。',
+        任务: `主线：${state.progress === 3 ? '星塔的低语（已完成）' : state.accepted ? `星塔的低语（阶段 ${state.progress}/3）` : '星塔的低语（未接受）'}\n支线记忆碎片：${state.memory}/3\n云海信使：${state.beacon ? '已完成' : '未完成'}`,
+        地图: mapInfo,
         设置: '拖动右侧环境滑块可实时改变场景。点击重置世界清空本次进度。'
       };
       openModal(name, texts[name] || '');
     };
   });
 
-  function openModal(title, text) {
-    $('modalTitle').textContent = title;
-    $('modalText').textContent = text;
-    $('modal').classList.add('open');
-  }
-
   $('modalClose').onclick = () => $('modal').classList.remove('open');
-  $('modal').onclick = (e) => {
-    if (e.target === $('modal')) $('modal').classList.remove('open');
-  };
+  $('modal').onclick = e => { if (e.target === $('modal')) $('modal').classList.remove('open'); };
 
-  $('light').oninput = (e) => {
+  $('light').oninput = e => {
     const v = +e.target.value;
     $('lightOut').textContent = v + '%';
     $('#sky').style.filter = `brightness(${0.55 + v / 150})`;
     $('#sun').style.opacity = String(0.2 + v / 125);
   };
 
-  $('weather').oninput = (e) => {
+  $('weather').oninput = e => {
     const v = +e.target.value;
     const weather = v < 25 ? '晴朗' : v < 50 ? '多云' : v < 75 ? '薄雾' : '星雨';
     $('weatherOut').textContent = weather;
@@ -846,7 +792,7 @@
     $('#world').style.filter = `saturate(${1 - v / 160})`;
   };
 
-  $('magic').oninput = (e) => {
+  $('magic').oninput = e => {
     const v = +e.target.value;
     $('magicOut').textContent = v + '%';
     $('magicLabel').textContent = v < 25 ? '警告：星塔能量过低' : v < 55 ? '星塔波动中' : '星塔稳定';
@@ -862,7 +808,19 @@
   };
 
   $('reset').onclick = () => {
-    Object.assign(S, { accepted: false, progress: 0, memory: 0, affinity: 2, mp: 64, x: 48, depth: 0, beacon: false, visited: { town: true, tower: false, beacon: false } });
+    Object.assign(state, {
+      accepted: false,
+      progress: 0,
+      memory: 0,
+      affinity: 2,
+      mp: 64,
+      x: 48,
+      depth: 0,
+      beacon: false,
+      world: '浮空城外环',
+      inventory: { '星尘': 3, '治愈药': 2, '星塔徽记': 0 },
+      combo: 0
+    });
     logs = [];
     render();
     $('modal').classList.remove('open');
@@ -871,9 +829,7 @@
       <button data-choice="ask">询问浮空城的历史</button>
       <button data-choice="explore">暂时自由探索</button>
     `;
-    $('choices').querySelectorAll('button').forEach(btn => {
-      btn.onclick = () => choose(btn.dataset.choice);
-    });
+    $('choices').querySelectorAll('button').forEach(btn => btn.onclick = () => choose(btn.dataset.choice));
     say('艾莉娅', '欢迎来到浮空城，旅人。中央星塔的光芒正在减弱。你愿意帮助我们调查异变吗？', [
       ['accept', '接受任务：调查星塔异变'],
       ['ask', '询问浮空城的历史'],
@@ -882,6 +838,48 @@
     record('世界已重置。');
     toast('已重置冒险进度');
   };
+
+  function skillPulse() {
+    if (state.mp < 8) { toast('星能不足，无法施放星尘冲击。'); return; }
+    state.mp -= 8;
+    state.combo += 1;
+    record('你施放星尘冲击，空气中裂开一道短暂的星光裂纹。');
+    toast('发动：星尘冲击');
+    render();
+  }
+
+  function skillShield() {
+    if (state.mp < 6) { toast('星能不足，光环屏障未能展开。'); return; }
+    state.mp -= 6;
+    state.affinity = Math.min(10, state.affinity + 1);
+    record('你展开光环屏障，周围的符文一瞬间安静下来。');
+    toast('发动：光环屏障');
+    render();
+  }
+
+  function skillTrace() {
+    if (state.mp < 10) { toast('星能不足，记忆回溯被压制。'); return; }
+    state.mp -= 10;
+    state.inventory['星尘'] += 1;
+    record('你回溯旧日的星语，偶然发现一段被遗忘的云海地图。');
+    toast('发动：记忆回溯');
+    render();
+  }
+
+  function skillRush() {
+    if (state.mp < 12) { toast('星能不足，云海突进无法引发。'); return; }
+    state.mp -= 12;
+    state.x = Math.max(18, Math.min(82, state.x + 8));
+    state.depth = Math.min(18, state.depth + 2);
+    record('你借云海之力向前冲刺，一道白光划过星塔底部。');
+    toast('发动：云海突进');
+    render();
+  }
+
+  $('skillPulse').onclick = skillPulse;
+  $('skillShield').onclick = skillShield;
+  $('skillTrace').onclick = skillTrace;
+  $('skillRush').onclick = skillRush;
 
   record('你抵达浮空城外围。艾莉娅正在等待你。');
   render();
